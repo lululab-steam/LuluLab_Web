@@ -1,0 +1,344 @@
+/* ========== CSS 變數定義 ========== --dark-bg: #1a1a1a; rgba(26, 26, 26, 0.8)*/
+:root {
+    --primary-orange: #FF7F24;
+    --dark-bg: rgba(3, 3, 3, 0.8);
+    --light-text: #ffffff;
+    --card-bg: rgba(34, 34, 34, 0.8);
+}
+
+/* ========== 全局樣式 ========== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+}
+
+body {
+    background-color: var(--dark-bg);
+    color: var(--light-text);
+    line-height: 1.6;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+}
+
+/* ========== 導航欄樣式 ========== */
+nav {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    padding: 1rem 10%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(26, 26, 26, 0.8);
+    backdrop-filter: blur(10px);
+    z-index: 1000;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: var(--primary-orange);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+nav ul {
+    display: flex;
+    list-style: none;
+}
+
+nav ul li {
+    margin-left: 2rem;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: white;
+    font-size: 0.9rem;
+    transition: 0.3s;
+}
+
+nav ul li a:hover {
+    color: var(--primary-orange);
+}
+
+/* ========== Canvas 粒子背景 ========== */
+#particle-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: 1; /* 確保它在背景 */
+    pointer-events: none; /* 讓滑鼠點擊穿透到下方的按鈕 */
+    background-color: var(--primary-orange);
+    transition: background-color 0.8s ease;
+}
+
+/* Canvas 背景色切換 */
+body.scrolled #particle-canvas {
+    background-color: var(--dark-bg);
+}
+
+/* ========== 首頁粒子區域 ========== */
+#home {
+    height: 100vh;
+    width: 100%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 2;
+}
+
+.scroll-hint {
+    position: absolute;
+    bottom: 30px;
+    animation: bounce 2s infinite;
+    color: white;
+    text-align: center;
+    font-size: 0.8rem;
+    z-index: 10;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+    40% {transform: translateY(-10px);}
+    60% {transform: translateY(-5px);}
+}
+
+/* ========== 通用區塊樣式 ========== */
+section {
+    padding: 100px 10% 20px;
+    position: relative;
+    z-index: 2;
+    background-color: var(--dark-bg);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#home {
+    background-color: transparent;
+}
+
+#intro {
+    text-align: center;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(60px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+h2.section-title {
+    font-size: 2.5rem;
+    margin-bottom: 3rem;
+    text-align: center;
+    color: var(--primary-orange);
+}
+
+/* ========== 課程體系卡片 ========== */
+.curriculum-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    width: 100%;
+    max-width: 1200px;
+}
+
+.curriculum-card {
+    background: var(--card-bg);
+    padding: 2.5rem;
+    border-radius: 20px;
+    transition: 0.4s;
+    border-bottom: 5px solid transparent;
+}
+
+.curriculum-card:hover {
+    transform: translateY(-10px);
+    border-bottom: 5px solid var(--primary-orange);
+}
+
+.curriculum-card h3 {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    color: var(--primary-orange);
+}
+
+.tag {
+    background: rgba(255, 127, 36, 0.2);
+    color: var(--primary-orange);
+    padding: 4px 12px;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    display: inline-block;
+    margin-bottom: 1rem;
+}
+
+/* ========== 項目清單 ========== */
+.project-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    width: 100%;
+    max-width: 1200px;
+}
+
+.project-category {
+    background: rgba(34, 34, 34, 0.8);
+    padding: 2rem;
+    border-radius: 15px;
+}
+
+.project-category h4 {
+    margin-bottom: 1.5rem;
+    border-left: 4px solid var(--primary-orange);
+    padding-left: 1rem;
+}
+
+.project-list {
+    list-style: none;
+}
+
+.project-list li {
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+}
+
+.project-list li::before {
+    content: "▹";
+    color: var(--primary-orange);
+    margin-right: 10px;
+}
+
+/* ========== 教學資源卡片 ========== */
+.resources-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    width: 100%;
+    max-width: 1200px;
+}
+
+.resource-card {
+    background: var(--card-bg);
+    padding: 2rem;
+    border-radius: 15px;
+    text-align: center;
+    transition: 0.3s;
+    border: 2px solid transparent;
+}
+
+.resource-card:hover {
+    transform: translateY(-8px);
+    border-color: var(--primary-orange);
+    box-shadow: 0 8px 20px rgba(255, 127, 36, 0.2);
+}
+
+.resource-card h3 {
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+    color: var(--primary-orange);
+}
+
+.resource-card i {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    display: block;
+    color: var(--primary-orange);
+}
+
+/* ========== 預約按鈕 ========== */
+.cta-button {
+    display: inline-block;
+    background: var(--primary-orange);
+    color: white;
+    padding: 1rem 2.5rem;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: bold;
+    margin-top: 2rem;
+    transition: 0.3s;
+}
+
+.cta-button:hover {
+    box-shadow: 0 0 20px rgba(255, 127, 36, 0.5);
+    transform: scale(1.05);
+}
+
+/* ========== Footer ========== */
+footer {
+    text-align: center;
+    padding: 3rem;
+    background: #111;
+    font-size: 0.8rem;
+    color: #666;
+    position: relative;
+    z-index: 2;
+}
+
+/* ========== 響應式設計（手機版） ========== */
+@media (max-width: 768px) {
+    nav {
+        padding: 1rem 5%;
+    }
+
+    .logo {
+        font-size: 1.2rem;
+    }
+
+    nav ul {
+        display: none;
+    }
+
+    section {
+        padding: 80px 5%;
+    }
+
+    h2.section-title {
+        font-size: 1.8rem;
+        margin-bottom: 2rem;
+    }
+
+    .curriculum-container {
+        grid-template-columns: 1fr;
+    }
+
+    .project-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .cta-button {
+        padding: 0.8rem 2rem;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    section {
+        padding: 60px 3%;
+        min-height: auto;
+    }
+
+    h2.section-title {
+        font-size: 1.5rem;
+    }
+
+    .curriculum-card,
+    .project-category {
+        padding: 1.5rem;
+    }
+}

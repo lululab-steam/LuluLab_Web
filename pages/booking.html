@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>聯絡我們 | Contact Us - LuluLab</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background-color: var(--dark-bg);
+            color: var(--light-text);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .contact-container {
+            max-width: 600px; /* 縮小容器寬度，因為現在沒有表單了 */
+            margin: auto; /* 垂直水平置中 */
+            padding: 30px 40px;
+            background-color: var(--card-bg);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 127, 36, 0.3);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            text-align: center;
+        }
+
+        .contact-header h1 {
+            color: var(--primary-orange);
+            font-size: 2.5em;
+            margin-bottom: 15px;
+        }
+
+        .contact-header p {
+            color: #aaa;
+            margin-bottom: 40px;
+        }
+
+        .info-panel {
+            text-align: left; /* 資訊內容保持靠左較易閱讀 */
+            background: rgba(255, 127, 36, 0.03);
+            padding: 30px;
+            border-radius: 15px;
+            display: inline-block; /* 讓面板寬度隨內容縮放 */
+            width: 100%;
+        }
+
+        .info-item {
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .info-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .info-item i {
+            color: var(--primary-orange);
+            font-size: 1.5em;
+            width: 30px; /* 固定圖標寬度讓文字對齊 */
+            text-align: center;
+        }
+
+        .info-item h3 {
+            font-size: 0.9em;
+            color: #888;
+            margin: 0;
+            text-transform: uppercase;
+        }
+
+        .info-item p {
+            font-size: 1.1em;
+            margin: 2px 0 0;
+            color: #eee;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 40px;
+            color: var(--primary-orange);
+            text-decoration: none;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .back-link:hover {
+            letter-spacing: 1px;
+            filter: brightness(1.2);
+        }
+
+        @media (max-width: 480px) {
+            .contact-container {
+                margin: 80px 20px;
+                padding: 40px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo">LuluLab</div>
+    </nav>
+
+    <div class="contact-container">
+        <div class="contact-header">
+            <h1>聯絡我們</h1>
+            <p>無論是技術諮詢或課程詢問，我們都期待收到您的訊息</p>
+        </div>
+
+        <div class="info-panel">
+            <div class="info-item">
+                <i class="fas fa-envelope"></i>
+                <div>
+                    <h3>電子郵件 | Email</h3>
+                    <p>lululabofficial2025@gmail.com</p>
+                </div>
+            </div>
+            <div class="info-item">
+                <i class="fas fa-phone-alt"></i>
+                <div>
+                    <h3>聯絡電話 | Phone</h3>
+                    <p>+852 XXXX XXXX</p>
+                </div>
+            </div>
+            <div class="info-item">
+                <i class="fas fa-map-marker-alt"></i>
+                <div>
+                    <h3>所在位置 | Location</h3>
+                    <p>Hong Kong</p>
+                </div>
+            </div>
+            <div class="info-item">
+                <i class="fas fa-clock"></i>
+                <div>
+                    <h3>服務時間 | Hours</h3>
+                    <p>Mon - Fri, 10:00 - 17:00</p>
+                </div>
+            </div>
+        </div>
+
+        <a href="../index.html" class="back-link">← 返回首頁 | Back to Home</a>
+    </div>
+
+</body>
+</html>

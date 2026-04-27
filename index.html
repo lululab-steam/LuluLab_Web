@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LuluLab | 點燃你的科技火花</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <nav>
+        <div class="logo">LuluLab</div>
+        <ul>
+            <li><a href="#home">Home | LuluLab</a></li>
+            <li><a href="#about">關於 | About</a></li>
+            <li><a href="#curriculum">課程 | Modules</a></li>
+            <li><a href="#projects">項目 | Projects</a></li>
+            <li><a href="#resources">資源 | Resources</a></li>
+            <li><a href="#contact">聯絡 | Contact</a></li>
+        </ul>
+    </nav>
+
+    <canvas id="particle-canvas"></canvas>
+
+    <section id="home">
+        <div class="scroll-hint">
+            <p>向下滾動探索</p>
+            <i class="fas fa-chevron-down"></i>
+        </div>
+    </section>
+
+    <section id="about">
+        <div style="max-width: 900px; text-align: center; color: #ccc; line-height: 2;">
+            <h2 class="section-title">關於 LuluLab</h2>
+            <p>LuluLab 團隊成立於 <span style="color: var(--primary-orange); font-weight: bold;">2025 年</span>，由香港科技大學（HKUST）計算機科學、電子工程、數學系學生共同創立。</p>
+            <p>我們從機械、電子、電腦程式、人工智慧四大核心維度，設計系統化的 STEAM 教學架構。透過<span style="color: var(--primary-orange); font-weight: bold;">專案導向實作模式</span>，引導學生從零開始動手研發，循序漸進完成小型體驗作品、底層技術訓練，以至進階完整工程產品。</p>
+            <p>我們不以單一技能教學為限，而是整合硬體電路、程式邏輯、機械設計與 AI 應用，讓學生理解跨領域協作的思維，建立屬於新一代的科技素養與創造力。</p>
+        </div>
+    </section>
+
+    <section id="curriculum">
+        <h2 class="section-title">課程體系｜三大模組</h2>
+        <div class="curriculum-container">
+            <div class="curriculum-card">
+                <span class="tag">體驗課</span>
+                <h3>Spark 火花</h3>
+                <p>寓意靈光的閃現與興趣的點燃，進入科技世界的第一道光。</p>
+                <br>
+                <p><strong>適合：</strong>零基礎科技好奇者、中小學生</p>
+                <p><strong>核心：</strong>帶走第一個黑科技作品，建立成就感。</p>
+            </div>
+            <div class="curriculum-card">
+                <span class="tag">系統課</span>
+                <h3>Root 根基</h3>
+                <p>取「生長根基」與「程式根目錄」雙重含義，是技術底層核心。</p>
+                <br>
+                <p><strong>適合：</strong>願意長期深耕的學生，契合長線學習節奏</p>
+                <p><strong>核心：</strong>建構完整STEAM思維，夯實科技領域的底層核心能力。</p>
+            </div>
+            <div class="curriculum-card">
+                <span class="tag">進階課</span>
+                <h3>Forge 鍛造</h3>
+                <p>在高壓與真實需求中磨練，將創意鍛造成可落地的產品。</p>
+                <br>
+                <p><strong>適合：</strong>具備基礎、想挑戰比賽/黑客松的學生</p>
+                <p><strong>核心：</strong>導入工程師文化，完成完整產品研發流程。</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="projects">
+        <h2 class="section-title">項目</h2>
+        <div class="project-grid">
+            <div class="project-category">
+                <h4><i class="fas fa-microchip"></i> 硬體類</h4>
+                <ul class="project-list">
+                    <li>ESP32 IOT智慧控制系列</li>
+                    <li>Arduino 循線機器人</li>
+                    <li>TinyML AI 辨識裝置</li>
+                    <li>ESP32 足球機器人</li>
+                    <li>多合一感測器整合套件</li>
+                </ul>
+            </div>
+            <div class="project-category">
+                <h4><i class="fas fa-code"></i> 軟體 & AI 類</h4>
+                <ul class="project-list">
+                    <li>機械學習/深度學習入門</li>
+                    <li>OpenCV 電腦視覺入門</li>
+                    <li>MediaPipe / YOLO 電腦視覺入門</li>
+                    <li>像素視覺特效｜互動式網站</li>
+                    <li>Agentic AI 智能體開發實作</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section id="resources">
+        <h2 class="section-title">教學資源</h2>
+        <div class="resources-grid">
+            <div class="resource-card">
+                <h3><i class="fas fa-book"></i> 教材文檔</h3>
+                <p>完整的課程教材、實驗指南和參考資料，支援離線學習。</p>
+            </div>
+            <div class="resource-card">
+                <h3><i class="fas fa-video"></i> 教學影片</h3>
+                <p>由專業講師錄製的教學影片，涵蓋所有核心概念。</p>
+            </div>
+            <div class="resource-card">
+                <h3><i class="fas fa-code-branch"></i> 代碼庫</h3>
+                <p>GitHub 上的開源代碼範例和完整項目源碼。</p>
+            </div>
+            <div class="resource-card">
+                <h3><i class="fas fa-tools"></i> 工具集</h3>
+                <p>精選的開發工具、硬體驅動和配置文件。</p>
+            </div>
+            <div class="resource-card">
+                <h3><i class="fas fa-comments"></i> 社區論壇</h3>
+                <p>學生交流平台，分享經驗、提問和互相幫助。</p>
+            </div>
+            <div class="resource-card">
+                <h3><i class="fas fa-link"></i> 外部鏈接</h3>
+                <p>精心選擇的外部資源和推薦閱讀材料。</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact">
+        <h2 class="section-title">開始你的科技之旅</h2>
+        <p style="font-size: 1.1rem; margin: 1.5rem 0; max-width: 700px; margin-left: auto; margin-right: auto;">
+            不論是校內 STEAM 合作、黑客松體驗，還是專題研習指導，我們都準備好與您合作！
+        </p>
+        <a href="pages/booking.html" class="cta-button">立即聯絡我們</a>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 LuluLab. All Rights Reserved. </p>
+    </footer>
+
+    <script src="js/script.js"></script>
+</body>
+</html>

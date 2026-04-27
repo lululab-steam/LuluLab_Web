@@ -1,0 +1,26 @@
+# 操作系統相關
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# IDE 編輯器
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Node.js（如果以後使用）
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# 構建輸出
+dist/
+build/
+*.log
+
+# 環境文件
+.env
+.env.local
