@@ -281,13 +281,113 @@ h2.section-title {
 
 /* ========== Footer ========== */
 footer {
-    text-align: center;
-    padding: 3rem;
-    background: #111;
-    font-size: 0.8rem;
-    color: #666;
+    background: #000; /* 調整為極致黑底，更契合黑客松/科技感視覺 */
+    padding: 2.5rem 10%;
+    font-size: 0.85rem;
+    color: #888;
     position: relative;
     z-index: 2;
+    border-top: 1px solid #1a1a1a; /* 增加一條低調的頂部網絡分割線 */
+}
+
+.footer-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.footer-left p {
+    margin: 0;
+    letter-spacing: 0.5px;
+}
+
+.footer-center {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.footer-center .social-link {
+    color: #888;
+    font-size: 1.25rem;
+    transition: color 0.3s ease, transform 0.3s ease;
+    text-decoration: none;
+}
+
+.footer-center .social-link:hover {
+    color: var(--primary-orange); /* 懸停時轉為 LuluLab 品牌橘色 */
+    transform: scale(1.1);
+}
+
+.footer-right .back-to-top {
+    color: #888;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    transition: color 0.3s ease;
+    font-weight: 500;
+}
+
+.footer-right .back-to-top i {
+    font-size: 1.1rem;
+    transition: transform 0.3s ease;
+}
+
+.footer-right .back-to-top:hover {
+    color: #ffffff; /* 懸停時文字變白，更符合現代 UI 習慣 */
+}
+
+.footer-right .back-to-top:hover i {
+    color: var(--primary-orange);
+    transform: translateY(-3px); /* 懸停時箭頭微微往上跳動，增加動態趣味 */
+}
+
+/* ========== 響應式設計（手機版）優化 ========== */
+@media (max-width: 768px) {
+    nav {
+        padding: 1rem 5%;
+    }
+
+    .logo {
+        font-size: 1.2rem;
+    }
+
+    nav ul {
+        display: none;
+    }
+
+    section {
+        padding: 80px 5%;
+    }
+
+    h2.section-title {
+        font-size: 1.8rem;
+        margin-bottom: 2rem;
+    }
+
+    .curriculum-container {
+        grid-template-columns: 1fr;
+    }
+
+    .project-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .cta-button {
+        padding: 0.8rem 2rem;
+        font-size: 0.9rem;
+    }
+
+    /* 手機端 Footer 改為垂直置中排列，避免擠壓變形 */
+    .footer-container {
+        flex-direction: column;
+        gap: 1.5rem;
+        text-align: center;
+    }
 }
 
 /* ========== 響應式設計（手機版） ========== */
