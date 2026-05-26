@@ -45,7 +45,7 @@ git add .
 git commit -m "Initial commit: LuluLab website"
 
 # 添加遠程倉庫
-git remote add origin https://github.com/yourusername/LuluLabWeb.git
+git remote add origin https://github.com/lululab-steam/LuluLab_Web.git
 
 # 推送到 GitHub（main 分支）
 git branch -M main
