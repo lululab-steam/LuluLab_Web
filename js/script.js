@@ -5,7 +5,7 @@ let particles = [];
 let allTextPoints = {};
 
 const config = {
-    fontSize: window.innerWidth < 768 ? 80 : 160, // 根據螢幕調整字體大小
+    fontSize: window.innerWidth < 768 ? 80 : 160, 
     fontName: 'Arial Black',
     gap: 6,
     particleSize: 2.2,
@@ -17,13 +17,13 @@ const config = {
 const mouse = { x: -999, y: -999 };
 
 const textSequence = [
-    // y: canvas.height * 0.4 表示放在畫面從上面算起 40% 的位置
-    { text: 'LuluLab', sectionId: 'home', size: 250, y: 0.55 }, 
-    { text: 'ABOUT', sectionId: 'about', size: 120, y: 0.4 },
-    { text: 'MODULES', sectionId: 'curriculum', size: 120, y: 0.27 },
-    { text: 'PROJECTS', sectionId: 'projects', size: 120, y: 0.31 },
-    { text: 'RESOURCES', sectionId: 'resources', size: 120, y: 0.2 },
-    { text: 'CONTACT US', sectionId: 'contact', size: 120, y: 0.38 }
+    // 移除硬編碼的固定比例，改由 DOM 動態計算真實標題 Y 軸
+    { text: 'LuluLab', sectionId: 'home', size: 250, defaultY: 0.55 }, 
+    { text: 'ABOUT', sectionId: 'about', size: 120 },
+    { text: 'MODULES', sectionId: 'curriculum', size: 120 },
+    { text: 'PROJECTS', sectionId: 'projects', size: 120 },
+    { text: 'RESOURCES', sectionId: 'resources', size: 120 },
+    { text: 'CONTACT', sectionId: 'contact', size: 120 }
 ];
 
 // ==================== 初始化 ====================
@@ -31,16 +31,32 @@ function init() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
     
+    const isMobile = window.innerWidth < 768;
+    const scale = isMobile ? 0.55 : 1; // 自動縮小手機版的粒子文字，防止水平溢出
+
     textSequence.forEach(item => {
-        // 根據 item.y 設定垂直位置，如果沒設定就預設置中 (0.5)
         const targetX = canvas.width / 2;
-        const targetY = canvas.height * (item.y || 0.5);
+        let targetY = canvas.height * (item.defaultY || 0.5); // 預設居中備用點
+        
+        // 【優化點 1】：動態獲取實體 DOM 標題的相對高度
+        const section = document.getElementById(item.sectionId);
+        if (section) {
+            const titleEl = section.querySelector('.section-title');
+            if (titleEl) {
+                const sectionRect = section.getBoundingClientRect();
+                const titleRect = titleEl.getBoundingClientRect();
+                
+                // 計算標題相對於該 Section 頂部的絕對差值，並加上標題自身高度的一半（實現居中對齊）
+                // 這種減法計算方式不受當前網頁滾動到哪裡的影響，非常精確
+                targetY = (titleRect.top - sectionRect.top) + (titleRect.height / 2) - 11; // -11 是微調值，讓粒子文字更貼合標題位置
+            }
+        }
         
         allTextPoints[item.text] = getPoints(
             item.text, 
             targetX, 
             targetY, 
-            item.size
+            item.size * scale
         );
     });
 
@@ -53,14 +69,13 @@ function getPoints(text, x, y, specificSize) {
     tempCanvas.width = canvas.width;
     tempCanvas.height = canvas.height;
     
-    const fontSize = specificSize || config.fontSize; // 如果有傳入特定大小就用它，否則用預設
+    const fontSize = specificSize || config.fontSize;
 
     tCtx.fillStyle = 'white';
     tCtx.textAlign = 'center';
-    tCtx.textBaseline = 'middle'; // 這會確保 y 座標是文字的中心點
+    tCtx.textBaseline = 'middle'; 
     tCtx.font = `bold ${fontSize}px ${config.fontName}`;
     
-    // 使用傳入的 x, y
     tCtx.fillText(text, x, y);
 
     const data = tCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height).data;
@@ -81,21 +96,19 @@ function createParticles() {
     particles = [];
     const basePoints = allTextPoints['LuluLab'] || [];
     
-    // 找出所有單字中點位最多的數量，避免切換時粒子消失
     let maxCount = 0;
     textSequence.forEach(item => {
         maxCount = Math.max(maxCount, allTextPoints[item.text].length);
     });
 
     for (let i = 0; i < maxCount; i++) {
-        // 初始位置設定
         const p1 = basePoints[i % basePoints.length];
         
         const particle = {
-            x: p1.x, // 當前實際 X
-            y: p1.y, // 當前實際 Y
-            baseX: p1.x, // 動態目標 X
-            baseY: p1.y, // 動態目標 Y
+            x: p1.x, 
+            y: p1.y, 
+            baseX: p1.x, 
+            baseY: p1.y, 
             vx: 0,
             vy: 0,
             targets: {},
@@ -121,12 +134,10 @@ function updatePhysics() {
         const t1 = p.targets[currentText];
         const t2 = p.targets[nextText];
 
-        // 1. 根據滾動計算「預定目標位置」
         let scatter = Math.sin(progress * Math.PI) * p.randomFactor;
         const targetX = t1.x + (t2.x - t1.x) * progress + scatter;
         const targetY = t1.y + (t2.y - t1.y) * progress + scatter;
 
-        // 2. 滑鼠互動邏輯
         let dx = mouse.x - p.x;
         let dy = mouse.y - p.y;
         let distance = Math.sqrt(dx * dx + dy * dy);
@@ -135,19 +146,15 @@ function updatePhysics() {
         let forceY = 0;
 
         if (distance < config.mouseRadius) {
-            // 推開力：距離越近力量越大
             const angle = Math.atan2(dy, dx);
             const push = (config.mouseRadius - distance) / config.mouseRadius;
             forceX = -Math.cos(angle) * push * 15; 
             forceY = -Math.sin(angle) * push * 15;
         }
 
-        // 3. 磁吸回彈物理 (Spring physics)
-        // 粒子總是想回到 targetX, targetY
         p.vx += (targetX - p.x) * config.ease + forceX;
         p.vy += (targetY - p.y) * config.ease + forceY;
         
-        // 摩擦力，防止無限震盪
         p.vx *= 0.7;
         p.vy *= 0.7;
 
@@ -156,21 +163,50 @@ function updatePhysics() {
     });
 }
 
+// 【優化點 2】：基於每個 Section 的真實 offsetTop 進行動態範圍判定
 function getCurrentTextAndProgress() {
     const scrollY = window.scrollY;
-    const vh = window.innerHeight;
+    let index = 0;
     
-    // 修正：首頁滾動進度從 0 開始
-    // 找出目前在第幾個 section
-    let index = Math.floor(scrollY / vh);
-    index = Math.max(0, Math.min(index, textSequence.length - 1));
+    // 遍歷所有節點，判斷當前滾動位置落在哪兩個 Section 的區間內
+    for (let i = 0; i < textSequence.length; i++) {
+        const currentSection = document.getElementById(textSequence[i].sectionId);
+        if (!currentSection) continue;
+        
+        const top = currentSection.offsetTop;
+        const nextSection = textSequence[i + 1] ? document.getElementById(textSequence[i + 1].sectionId) : null;
+        // 如果沒有下一個 Section，就以當前 Section 的底部作為邊界
+        const bottom = nextSection ? nextSection.offsetTop : top + currentSection.offsetHeight;
+        
+        if (scrollY >= top && scrollY < bottom) {
+            index = i;
+            break;
+        }
+        
+        // 觸底極端情況處理
+        if (i === textSequence.length - 1 && scrollY >= top) {
+            index = i;
+        }
+    }
     
-    let progress = (scrollY % vh) / vh;
-    
-    // 讓進度在 section 中間才觸發大幅度散開
-    // 調整 progress 讓切換更平滑
     const currentText = textSequence[index].text;
-    const nextText = textSequence[Math.min(index + 1, textSequence.length - 1)].text;
+    const nextIndex = Math.min(index + 1, textSequence.length - 1);
+    const nextText = textSequence[nextIndex].text;
+
+    let progress = 0;
+    if (index < textSequence.length - 1) {
+        const currentSection = document.getElementById(textSequence[index].sectionId);
+        const nextSection = document.getElementById(textSequence[nextIndex].sectionId);
+        
+        if (currentSection && nextSection) {
+            // 進度依據「落入當前 Section 到下一 Section 頂部之間」的比例動態計算
+            const startScroll = currentSection.offsetTop;
+            const endScroll = nextSection.offsetTop;
+            progress = (scrollY - startScroll) / (endScroll - startScroll);
+        }
+    }
+    
+    progress = Math.max(0, Math.min(progress, 1)); // 確保數值在 0~1 之間
 
     return { currentText, nextText, progress };
 }
@@ -178,7 +214,6 @@ function getCurrentTextAndProgress() {
 function animate() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // 背景色過渡
     if (window.scrollY > window.innerHeight * 0.4) {
         document.body.classList.add('scrolled');
     } else {
@@ -225,7 +260,6 @@ function initInfiniteScroll() {
         const content = line.querySelector('.scroll-line-content');
         const direction = line.getAttribute('data-direction');
 
-        // 大量克隆文字，確保超長的無縫滾動（克隆更多次）
         for (let clone = 0; clone < 6; clone++) {
             textItems.forEach((text, textIndex) => {
                 const textGroup = document.createElement('div');
@@ -240,14 +274,10 @@ function initInfiniteScroll() {
             });
         }
 
-        // 等待 DOM 繪製完成後計算寬度
         requestAnimationFrame(() => {
-            // 計算單套完整文字（4個詞組）的寬度
             const singleSetWidth = content.querySelector('.text-group').offsetWidth * textItems.length;
             
-            // 根據方向建立無縫循環動畫
             if (direction === 'left') {
-                // 向左滾動：0 → -singleSetWidth，然後跳回 0 重新開始
                 gsap.to(content, {
                     x: -singleSetWidth,
                     duration: 80,
@@ -255,13 +285,10 @@ function initInfiniteScroll() {
                     repeat: -1,
                     repeatDelay: 0,
                     onRepeat: () => {
-                        // 無縫重置，視覺上完全無斷層
                         gsap.set(content, { x: 0 });
                     }
                 });
             } else {
-                // 向右滾動：-singleSetWidth → 0，然後跳回 -singleSetWidth 重新開始
-                // 初始位置在左邊，動畫正向移到 0，視覺上是向右平滑滾動
                 gsap.set(content, { x: -singleSetWidth });
                 gsap.to(content, {
                     x: 0,
@@ -270,7 +297,6 @@ function initInfiniteScroll() {
                     repeat: -1,
                     repeatDelay: 0,
                     onRepeat: () => {
-                        // 無縫重置，視覺上完全無斷層、無跳變
                         gsap.set(content, { x: -singleSetWidth });
                     }
                 });
@@ -279,12 +305,9 @@ function initInfiniteScroll() {
     });
 }
 
-// 頁面加載完成後初始化
 document.addEventListener('DOMContentLoaded', initInfiniteScroll);
 
-// 窗口大小改變時重新初始化
 window.addEventListener('resize', () => {
-    // 殺死所有動畫並重新初始化
     gsap.killTweensOf('.scroll-line-content');
     initInfiniteScroll();
 });
