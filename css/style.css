@@ -345,7 +345,7 @@ footer {
 
 /* ========== 無限滾動文字組件 ========== */
 .infinite-scroll-section {
-    padding: 0;
+    padding: 20px 0;
     min-height: auto;
     background-color: #000;
     display: block;

@@ -23,7 +23,7 @@ const textSequence = [
     { text: 'MODULES', sectionId: 'curriculum', size: 120 },
     { text: 'PROJECTS', sectionId: 'projects', size: 120 },
     { text: 'RESOURCES', sectionId: 'resources', size: 120 },
-    { text: 'CONTACT', sectionId: 'contact', size: 120 }
+    { text: 'CONTACT US', sectionId: 'contact', size: 120 }
 ];
 
 // ==================== 初始化 ====================
