@@ -342,3 +342,93 @@ footer {
         padding: 1.5rem;
     }
 }
+
+/* ========== 無限滾動文字組件 ========== */
+.infinite-scroll-section {
+    padding: 0;
+    min-height: auto;
+    background-color: #000;
+    display: block;
+}
+
+.infinite-scroll-bar {
+    width: 100%;
+    background: #000;
+    overflow: hidden;
+    padding: 5px 0;
+}
+
+.scroll-lines {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.scroll-line {
+    font-size: 80px;
+    font-weight: 900;
+    line-height: 0.85;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    height: 75px;
+    overflow: hidden;
+}
+
+.scroll-line-content {
+    display: flex;
+    will-change: transform;
+    padding-right: 100px;
+}
+
+.text-group {
+    display: flex;
+    align-items: center;
+    gap: 80px;
+}
+
+.text-item {
+    flex-shrink: 0;
+    letter-spacing: -3px;
+}
+
+.text-item.orange {
+    color: #ff8800;
+}
+
+.text-item.white {
+    color: #ffffff;
+}
+
+/* 響應式調整 */
+@media (max-width: 768px) {
+    .infinite-scroll-bar {
+        padding: 5px 0;
+    }
+
+    .scroll-line {
+        font-size: 56px;
+        height: 50px;
+        line-height: 0.85;
+    }
+
+    .text-group {
+        gap: 50px;
+    }
+}
+
+@media (max-width: 480px) {
+    .infinite-scroll-bar {
+        padding: 5px 0;
+    }
+
+    .scroll-line {
+        font-size: 40px;
+        height: 38px;
+        line-height: 0.85;
+    }
+
+    .text-group {
+        gap: 30px;
+    }
+}

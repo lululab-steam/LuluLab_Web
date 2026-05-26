@@ -212,3 +212,79 @@ window.addEventListener('resize', init);
 // 啟動
 init();
 animate();
+
+// ==================== 無限滾動文字組件 ====================
+
+function initInfiniteScroll() {
+    const textItems = ['Dreamit', 'Buildit', 'Breakit', 'Fixit'];
+    const colors = ['orange', 'white'];
+    
+    const lines = document.querySelectorAll('.scroll-line');
+
+    lines.forEach((line, lineIndex) => {
+        const content = line.querySelector('.scroll-line-content');
+        const direction = line.getAttribute('data-direction');
+
+        // 大量克隆文字，確保超長的無縫滾動（克隆更多次）
+        for (let clone = 0; clone < 6; clone++) {
+            textItems.forEach((text, textIndex) => {
+                const textGroup = document.createElement('div');
+                textGroup.className = 'text-group';
+
+                const textItem = document.createElement('div');
+                textItem.className = `text-item ${colors[textIndex % colors.length]}`;
+                textItem.textContent = text;
+
+                textGroup.appendChild(textItem);
+                content.appendChild(textGroup);
+            });
+        }
+
+        // 等待 DOM 繪製完成後計算寬度
+        requestAnimationFrame(() => {
+            // 計算單套完整文字（4個詞組）的寬度
+            const singleSetWidth = content.querySelector('.text-group').offsetWidth * textItems.length;
+            
+            // 根據方向建立無縫循環動畫
+            if (direction === 'left') {
+                // 向左滾動：0 → -singleSetWidth，然後跳回 0 重新開始
+                gsap.to(content, {
+                    x: -singleSetWidth,
+                    duration: 80,
+                    ease: 'none',
+                    repeat: -1,
+                    repeatDelay: 0,
+                    onRepeat: () => {
+                        // 無縫重置，視覺上完全無斷層
+                        gsap.set(content, { x: 0 });
+                    }
+                });
+            } else {
+                // 向右滾動：-singleSetWidth → 0，然後跳回 -singleSetWidth 重新開始
+                // 初始位置在左邊，動畫正向移到 0，視覺上是向右平滑滾動
+                gsap.set(content, { x: -singleSetWidth });
+                gsap.to(content, {
+                    x: 0,
+                    duration: 80,
+                    ease: 'none',
+                    repeat: -1,
+                    repeatDelay: 0,
+                    onRepeat: () => {
+                        // 無縫重置，視覺上完全無斷層、無跳變
+                        gsap.set(content, { x: -singleSetWidth });
+                    }
+                });
+            }
+        });
+    });
+}
+
+// 頁面加載完成後初始化
+document.addEventListener('DOMContentLoaded', initInfiniteScroll);
+
+// 窗口大小改變時重新初始化
+window.addEventListener('resize', () => {
+    // 殺死所有動畫並重新初始化
+    gsap.killTweensOf('.scroll-line-content');
+    initInfiniteScroll();
+});
