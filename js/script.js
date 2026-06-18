@@ -112,7 +112,9 @@ function createParticles() {
             vx: 0,
             vy: 0,
             targets: {},
-            randomFactor: Math.random() * 500 - 250
+            randomFactor: Math.random() * 500 - 250,
+            scatterAngle: Math.random() * Math.PI * 2,
+            scatterDist: 150 + Math.random() * 300
         };
         
         textSequence.forEach(item => {
@@ -134,9 +136,22 @@ function updatePhysics() {
         const t1 = p.targets[currentText];
         const t2 = p.targets[nextText];
 
-        let scatter = Math.sin(progress * Math.PI) * p.randomFactor;
-        const targetX = t1.x + (t2.x - t1.x) * progress + scatter;
-        const targetY = t1.y + (t2.y - t1.y) * progress + scatter;
+        let targetX, targetY;
+
+        if (progress < 0.5) {
+            // Phase 1: Dissolve — 從當前文字向外爆散
+            const t = progress * 2;
+            const ease = 1 - Math.pow(1 - t, 3);
+            const dist = p.scatterDist * ease;
+            targetX = t1.x + Math.cos(p.scatterAngle) * dist;
+            targetY = t1.y + Math.sin(p.scatterAngle) * dist;
+        } else {
+            // Phase 2: Reform — 從散開位置收斂到下一組文字
+            const t = (progress - 0.5) * 2;
+            const ease = t * t * t;
+            targetX = t2.x + Math.cos(p.scatterAngle) * p.scatterDist * (1 - ease);
+            targetY = t2.y + Math.sin(p.scatterAngle) * p.scatterDist * (1 - ease);
+        }
 
         let dx = mouse.x - p.x;
         let dy = mouse.y - p.y;
@@ -222,10 +237,21 @@ function animate() {
 
     updatePhysics();
 
+    // 根據 scroll progress 讓粒子在消散階段淡出、重組階段淡入
+    const { progress } = getCurrentTextAndProgress();
+    let alpha = 1;
+    if (progress > 0 && progress < 0.5) {
+        alpha = 1 - progress * 2;      // 1 → 0
+    } else if (progress >= 0.5 && progress < 1) {
+        alpha = (progress - 0.5) * 2;  // 0 → 1
+    }
+
     ctx.fillStyle = 'white';
     particles.forEach(p => {
+        ctx.globalAlpha = alpha;
         ctx.fillRect(p.x, p.y, config.particleSize, config.particleSize);
     });
+    ctx.globalAlpha = 1;
 
     requestAnimationFrame(animate);
 }
