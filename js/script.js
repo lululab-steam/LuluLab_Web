@@ -154,6 +154,7 @@ function createParticles() {
              introRandomY: 0,
            // Per-particle alpha for intro fade effects
              introAlpha: 0,
+             size: config.particleSize,
              lineIndex: 0
        };
          // Set the same random start position in both actual pos and intro ref
@@ -198,88 +199,60 @@ function createParticles() {
          const elapsed = performance.now() - introStartTime;
          const progress = Math.min(elapsed / INTRO_DURATION, 1);
  
-         // Phase mapping on 0-1 intro timeline (each sentence gets its own animation):
-         //   0.00-0.20: "think it." slowly emerges with blink drops   → 思考
-         //   0.20-0.35: "build it." constructs from bottom up        → 建造
-         //   0.35-0.48: "break it." glitches and shakes              → 破坏
-         //   0.48-0.60: "fix it." reforms from fragments             → 修复
-         //   0.60-0.75: All four lines hold together
-         //   0.75-1.00: Converge to LuluLab
- 
-         const P0 = 0.20, P1 = 0.35, P2 = 0.48, P3 = 0.60, PH = 0.75;
- 
+         // Phase mapping on 0-1 intro timeline:
+         //   0.00-0.35: Converge from random to "think it..."
+         //   0.35-0.45: Hold at "think it..."
+         //   0.45-0.70: Scatter outward & fade out
+         //   0.70-1.00: Converge to LuluLab
+
          particles.forEach(p => {
              const tThink = p.targets[INTRO_TEXT] || { x: canvas.width / 2, y: canvas.height / 2 };
              const tLulu = p.targets['LuluLab'] || { x: p.baseX, y: p.baseY };
- 
-             let targetX = tThink.x;
-             let targetY = tThink.y;
-             let alpha = 0;
-             const li = p.lineIndex;
- 
-             if (progress < P0) {
-                 // "think it." — slowly emerges with brief blink drops
-                 if (li === 0) {
-                     const t = progress / P0;
-                     const ease = t * t * (3 - 2 * t);
-                     let blink = 1;
-                     if (t > 0.2 && t < 0.26) blink = 0.25;
-                     if (t > 0.5 && t < 0.57) blink = 0.35;
-                     alpha = ease * blink;
-                 }
-             } else if (progress < P1) {
-                 // "build it." — constructs from bottom up
-                 alpha = (li === 0) ? 1 : 0;
-                 if (li === 1) {
-                     const t = (progress - P0) / (P1 - P0);
-                     const yNorm = (tThink.y - (g_introCenterY - g_introLineHeight)) / g_introLineHeight;
-                     const appearAt = 1 - Math.max(0, Math.min(1, yNorm));
-                     if (t > appearAt) alpha = Math.min(1, (t - appearAt) * 6);
-                 }
-             } else if (progress < P2) {
-                 // "break it." — glitches and shakes
-                 alpha = (li <= 1) ? 1 : 0;
-                 if (li === 2) {
-                     const t = (progress - P1) / (P2 - P1);
-                     const h = ((tThink.x * 7 + tThink.y * 13 + 31) % 100) / 100;
-                     const glitch = Math.sin(t * Math.PI * 2.5) * (1 - t * 0.7);
-                     const g = Math.max(0, glitch);
-                     targetX += (h - 0.5) * g * 30;
-                     targetY += Math.sin(h * 17 + t * 20) * g * 8;
-                     const flicker = Math.sin(t * 45 + h * 15) > (-0.2 + t * 0.5) ? 1 : 0.15;
-                     alpha = Math.min(1, flicker * (0.3 + 0.7 * Math.min(1, t / 0.6)));
-                 }
-             } else if (progress < P3) {
-                 // "fix it." — reforms from slight displacement
-                 alpha = (li <= 2) ? 1 : 0;
-                 if (li === 3) {
-                     const t = (progress - P2) / (P3 - P2);
-                     const ease = t * t * (3 - 2 * t);
-                     const h = ((tThink.x * 7 + tThink.y * 13 + 31) % 100) / 100;
-                     targetX += (h - 0.5) * 25 * (1 - ease);
-                     targetY += (h - 0.5) * 15 * (1 - ease);
-                     alpha = ease;
-                 }
-             } else if (progress < PH) {
-                 // All text visible
-                 alpha = 1;
+
+             let targetX, targetY;
+
+             if (progress < 0.35) {
+                 // Phase 1: Converge from random -> "think it..." (staggered arrival)
+                 const t = progress / 0.35;
+                 const sweepX = p.introRandomX / canvas.width;
+                 const delay = sweepX * 0.7;
+                 const localT = Math.max(0, (t - delay) / (1 - delay));
+                 const ease = 1 + 2.70158 * Math.pow(localT - 1, 3) + 1.70158 * Math.pow(localT - 1, 2);
+                 targetX = p.introRandomX + (tThink.x - p.introRandomX) * ease;
+                 targetY = p.introRandomY + (tThink.y - p.introRandomY) * ease;
+                 p.introAlpha = ease;
+
+             } else if (progress < 0.45) {
+                 // Phase 2: Hold at "think it..."
+                 targetX = tThink.x;
+                 targetY = tThink.y;
+                 p.introAlpha = 1;
+
+             } else if (progress < 0.70) {
+                 // Phase 3: Scatter outward & fade out
+                 const t = (progress - 0.45) / 0.25;
+                 const scatterX = tThink.x + Math.cos(p.scatterAngle) * (p.scatterDist + 200);
+                 const scatterY = tThink.y + Math.sin(p.scatterAngle) * (p.scatterDist + 200);
+                 targetX = tThink.x + (scatterX - tThink.x) * t;
+                 targetY = tThink.y + (scatterY - tThink.y) * t;
+                 p.introAlpha = 1 - t * t;
+
              } else {
-                 // Converge to LuluLab
-                 const t = (progress - PH) / (1 - PH);
+                 // Phase 4: Converge to LuluLab
+                 const t = (progress - 0.70) / 0.30;
                  const ease = t * t * (3 - 2 * t);
-                 targetX = tThink.x + (tLulu.x - tThink.x) * ease;
-                 targetY = tThink.y + (tLulu.y - tThink.y) * ease;
-                 alpha = 0.4 + ease * 0.6;
+                 targetX = p.x + (tLulu.x - p.x) * ease;
+                 targetY = p.y + (tLulu.y - p.y) * ease;
+                 p.introAlpha = 0.4 + ease * 0.6;
              }
- 
-             // Snap particles directly (no spring physics during intro)
+
              p.x = targetX;
              p.y = targetY;
              p.vx = 0;
              p.vy = 0;
-             p.introAlpha = Math.max(0, Math.min(1, alpha));
+             p.size = config.particleSize;
          });
- 
+
         if (progress >= 1) {
             introActive = false;
             // Restore CSS-controlled background (orange at top, dark when scrolled)
@@ -428,7 +401,8 @@ function getCurrentTextAndProgress() {
          } else {
              ctx.globalAlpha = scrollAlpha;
          }
-         ctx.fillRect(p.x, p.y, config.particleSize, config.particleSize);
+         const ps = p.size || config.particleSize;
+         ctx.fillRect(p.x, p.y, ps, ps);
      });
      ctx.globalAlpha = 1;
  
