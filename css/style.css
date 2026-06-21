@@ -73,15 +73,15 @@ nav ul li a:hover {
     height: 100vh;
     z-index: 1; /* 確保它在背景 */
     pointer-events: none; /* 讓滑鼠點擊穿透到下方的按鈕 */
-    background-color: var(--primary-orange);
+     background-color: var(--primary-orange);
     transition: background-color 0.8s ease;
 }
 
-/* Canvas 背景色切換 */
-body.scrolled #particle-canvas {
-    background-color: var(--dark-bg);
-}
-
+ /* Canvas 背景色切換 */
+ body.scrolled #particle-canvas {
+     background-color: var(--dark-bg);
+ }
+ 
 /* ========== 首頁粒子區域 ========== */
 #home {
     height: 100vh;
