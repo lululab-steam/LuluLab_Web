@@ -3,6 +3,10 @@
  let introActive = true;
  let introStartTime = 0;
  const INTRO_DURATION = 8000; // ms for full intro sequence
+// Intro text rendering params (set in init, used by createParticles for line grouping)
+let g_introFontSize = 80;
+let g_introLineHeight = 96;
+let g_introCenterY = 0;
 
  // ==================== 初始化配置 ====================
 const canvas = document.getElementById('particle-canvas');
@@ -68,6 +72,9 @@ function init() {
 
    // Generate intro text points
    const introFontSize = isMobile ? 42 : 80;
+   g_introFontSize = introFontSize;
+   g_introLineHeight = introFontSize * 1.2;
+   g_introCenterY = canvas.height * 0.48;
    allTextPoints[INTRO_TEXT] = getPoints(
        INTRO_TEXT,
        canvas.width * 0.5,
@@ -145,9 +152,10 @@ function createParticles() {
             // Intro-specific: random start positions for phase 1 convergence
              introRandomX: 0,
              introRandomY: 0,
-            // Per-particle alpha for intro fade effects
-            introAlpha: 0
-        };
+           // Per-particle alpha for intro fade effects
+             introAlpha: 0,
+             lineIndex: 0
+       };
          // Set the same random start position in both actual pos and intro ref
          const rx = Math.random() * canvas.width;
          const ry = Math.random() * canvas.height;
@@ -168,10 +176,13 @@ function createParticles() {
          const introPts = allTextPoints[INTRO_TEXT];
          if (introPts && introPts.length > 0) {
              const target = introPts[i % introPts.length];
-             particle.targets[INTRO_TEXT] = { x: target.x, y: target.y };
-         }
-         
-         particles.push(particle);
+            particle.targets[INTRO_TEXT] = { x: target.x, y: target.y };
+             // Tag particle with its text line index (0-3) for per-line animations
+             const relY = target.y - (g_introCenterY - 1.5 * g_introLineHeight);
+             particle.lineIndex = Math.max(0, Math.min(3, Math.floor(relY / g_introLineHeight)));
+        }
+        
+        particles.push(particle);
      }
  
      // Reset intro for a fresh playback on init
@@ -187,67 +198,86 @@ function createParticles() {
          const elapsed = performance.now() - introStartTime;
          const progress = Math.min(elapsed / INTRO_DURATION, 1);
  
-         // Phase mapping on 0-1 intro timeline:
-         //   0.00-0.35: Random → "think it. build it. break it. fix it." (converge & fade in)
-         //   0.35-0.45: Hold stable
-         //   0.45-0.70: Scatter outward & fade out (dissipate)
-         //   0.70-1.00: Converge to LuluLab (reform)
+         // Phase mapping on 0-1 intro timeline (each sentence gets its own animation):
+         //   0.00-0.20: "think it." slowly emerges with blink drops   → 思考
+         //   0.20-0.35: "build it." constructs from bottom up        → 建造
+         //   0.35-0.48: "break it." glitches and shakes              → 破坏
+         //   0.48-0.60: "fix it." reforms from fragments             → 修复
+         //   0.60-0.75: All four lines hold together
+         //   0.75-1.00: Converge to LuluLab
+ 
+         const P0 = 0.20, P1 = 0.35, P2 = 0.48, P3 = 0.60, PH = 0.75;
  
          particles.forEach(p => {
              const tThink = p.targets[INTRO_TEXT] || { x: canvas.width / 2, y: canvas.height / 2 };
              const tLulu = p.targets['LuluLab'] || { x: p.baseX, y: p.baseY };
  
-             let targetX, targetY;
+             let targetX = tThink.x;
+             let targetY = tThink.y;
+             let alpha = 0;
+             const li = p.lineIndex;
  
-             if (progress < 0.35) {
-                 // Phase 1: Converge from random → "think it..."
-                 const t = progress / 0.35;
-                 const ease = t * t * (3 - 2 * t); // smoothstep
-                 targetX = p.introRandomX + (tThink.x - p.introRandomX) * ease;
-                 targetY = p.introRandomY + (tThink.y - p.introRandomY) * ease;
-                 p.introAlpha = ease; // fade in
-             } else if (progress < 0.45) {
-                 // Phase 2: Hold at "think it..."
-                 targetX = tThink.x;
-                 targetY = tThink.y;
-                 p.introAlpha = 1;
-             } else if (progress < 0.70) {
-                 // Phase 3: Scatter outward & fade out
-                 const t = (progress - 0.45) / 0.25;
-                 const scatterX = tThink.x + Math.cos(p.scatterAngle) * (p.scatterDist + 200);
-                 const scatterY = tThink.y + Math.sin(p.scatterAngle) * (p.scatterDist + 200);
-                 targetX = tThink.x + (scatterX - tThink.x) * t;
-                 targetY = tThink.y + (scatterY - tThink.y) * t;
-                 p.introAlpha = 1 - t * t; // fade out (quadratic for smoother dissipation)
+             if (progress < P0) {
+                 // "think it." — slowly emerges with brief blink drops
+                 if (li === 0) {
+                     const t = progress / P0;
+                     const ease = t * t * (3 - 2 * t);
+                     let blink = 1;
+                     if (t > 0.2 && t < 0.26) blink = 0.25;
+                     if (t > 0.5 && t < 0.57) blink = 0.35;
+                     alpha = ease * blink;
+                 }
+             } else if (progress < P1) {
+                 // "build it." — constructs from bottom up
+                 alpha = (li === 0) ? 1 : 0;
+                 if (li === 1) {
+                     const t = (progress - P0) / (P1 - P0);
+                     const yNorm = (tThink.y - (g_introCenterY - g_introLineHeight)) / g_introLineHeight;
+                     const appearAt = 1 - Math.max(0, Math.min(1, yNorm));
+                     if (t > appearAt) alpha = Math.min(1, (t - appearAt) * 6);
+                 }
+             } else if (progress < P2) {
+                 // "break it." — glitches and shakes
+                 alpha = (li <= 1) ? 1 : 0;
+                 if (li === 2) {
+                     const t = (progress - P1) / (P2 - P1);
+                     const h = ((tThink.x * 7 + tThink.y * 13 + 31) % 100) / 100;
+                     const glitch = Math.sin(t * Math.PI * 2.5) * (1 - t * 0.7);
+                     const g = Math.max(0, glitch);
+                     targetX += (h - 0.5) * g * 30;
+                     targetY += Math.sin(h * 17 + t * 20) * g * 8;
+                     const flicker = Math.sin(t * 45 + h * 15) > (-0.2 + t * 0.5) ? 1 : 0.15;
+                     alpha = Math.min(1, flicker * (0.3 + 0.7 * Math.min(1, t / 0.6)));
+                 }
+             } else if (progress < P3) {
+                 // "fix it." — reforms from slight displacement
+                 alpha = (li <= 2) ? 1 : 0;
+                 if (li === 3) {
+                     const t = (progress - P2) / (P3 - P2);
+                     const ease = t * t * (3 - 2 * t);
+                     const h = ((tThink.x * 7 + tThink.y * 13 + 31) % 100) / 100;
+                     targetX += (h - 0.5) * 25 * (1 - ease);
+                     targetY += (h - 0.5) * 15 * (1 - ease);
+                     alpha = ease;
+                 }
+             } else if (progress < PH) {
+                 // All text visible
+                 alpha = 1;
              } else {
-                 // Phase 4: Converge to LuluLab
-                 const t = (progress - 0.70) / 0.30;
+                 // Converge to LuluLab
+                 const t = (progress - PH) / (1 - PH);
                  const ease = t * t * (3 - 2 * t);
-                 targetX = p.x + (tLulu.x - p.x) * ease;
-                 targetY = p.y + (tLulu.y - p.y) * ease;
-                 p.introAlpha = 0.4 + ease * 0.6; // fade back in
+                 targetX = tThink.x + (tLulu.x - tThink.x) * ease;
+                 targetY = tThink.y + (tLulu.y - tThink.y) * ease;
+                 alpha = 0.4 + ease * 0.6;
              }
  
-             // Mouse interaction during intro
-             let dx = mouse.x - p.x;
-             let dy = mouse.y - p.y;
-             let distance = Math.sqrt(dx * dx + dy * dy);
-             let forceX = 0;
-             let forceY = 0;
- 
-             if (distance < config.mouseRadius) {
-                 const angle = Math.atan2(dy, dx);
-                 const push = (config.mouseRadius - distance) / config.mouseRadius;
-                 forceX = -Math.cos(angle) * push * 10;
-                 forceY = -Math.sin(angle) * push * 10;
-             }
- 
-             p.vx += (targetX - p.x) * config.ease + forceX;
-             p.vy += (targetY - p.y) * config.ease + forceY;
-             p.vx *= 0.7;
-             p.vy *= 0.7;
-             p.x += p.vx;
-             p.y += p.vy;
+             // Snap particles directly (no spring physics during intro)
+             p.x = targetX;
+             p.y = targetY;
+             p.vx = 0;
+             p.vy = 0;
+             p.introAlpha = Math.max(0, Math.min(1, alpha));
          });
  
         if (progress >= 1) {
