@@ -1,168 +1,146 @@
-# LuluLab - 科技教育實驗室
+ # LuluLab | 點燃你的科技火花
 
-> 點燃你的科技火花 🔥
+ LuluLab 是由香港科技大學（HKUST）學生創立的 STEAM 教育實驗室，透過專案導向的動手實作，帶領學生從零開始打造真正的科技作品。
 
-一個專注於推廣前沿科技教育的實驗室，透過動手實作（Hands-on）來理解世界的工具。
+ 網站展示課程體系、硬體/軟體專案以及教學資源，並提供聯絡預約功能。
 
-## 🌟 特色
+ ---
 
-- **粒子動畫效果** - 創新的互動式粒子文字轉換
-- **響應式設計** - 完美適配所有設備（桌面、平板、手機）
-- **模組化課程** - 三大課程體系：火花、根基、鍛造
-- **硬體 + 軟體** - 涵蓋 Arduino、機器人、AI 等全方位教學
+ ## 特色
 
-## 📋 項目結構
+ - **粒子動畫開場** — 首次載入時，粒子隨機散佈畫布，匯聚形成 "think it. build it. break it. fix it."，再向外消散後重組成 LuluLab 標誌，之後可隨滾輪在不同文字間流暢過渡
+ - **三層課程體系** — Spark 火花（入門工作坊）、Root 根基（系統學習）、Forge 鍛造（駭客松實戰）
+ - **硬體 + 軟體全覆蓋** — 從 Arduino/ESP32 物聯網、TinyML、電腦視覺到 Agentic AI
+ - **無限滾動文字列** — 品牌口號 "Dreamit Buildit Breakit Fixit" 以五列交錯方向循環滾動
+ - **全響應式設計** — 桌面／平板／手機完整適配
 
+ ---
+
+ ## 技術棧
+
+ | 層級 | 技術 |
+ |---|---|
+ | **結構** | HTML5（語意化標籤） |
+ | **樣式** | CSS3（自訂屬性、Grid、Flexbox） |
+ | **動畫** | Canvas API + requestAnimationFrame（粒子系統）、GSAP（無限滾動） |
+ | **圖示** | Font Awesome 6.4 |
+ | **字型** | PingFang TC, Microsoft JhengHei |
+ | **部署** | 靜態 HTML，相容 GitHub Pages / Netlify / Vercel |
+
+ ---
+
+ ## 專案結構
+
+ ```
+ LuluLabWeb/
+ ├── index.html            # 入口頁面
+ ├── AGENTS.md             # AI 開發者指引
+ ├── README.md             # 本文件
+ ├── css/
+ │   └── style.css         # 樣式定義（含響應式斷點）
+ ├── js/
+ │   └── script.js         # 粒子系統與無限滾動邏輯
+ ├── pages/
+ │   └── booking.html      # 聯絡預約頁
+ └── images/
+     └── .gitkeep
+ ```
+
+ ---
+
+ ## 快速開始
+
+ ### 本地開發
+
+ 此專案為純靜態網站，不需建置流程，只需一個靜態伺服器：
+
+ ```bash
+# Python 3
+python -m http.server 8000
+
+# 或 Node.js
+npx http-server
 ```
-LuluLabGithubWeb/
-├── index.html          # 首頁（主入口）
-├── css/
-│   └── style.css       # 所有樣式
-├── js/
-│   └── script.js       # 粒子動畫邏輯
-├── images/             # 圖片素材（待補充）
-├── .gitignore          # Git 忽略規則
-└── README.md           # 本檔案
+
+ 開啟瀏覽器前往 `http://localhost:8000`。
+
+ ### 部署
+
+ 支援 GitHub Pages、Netlify、Vercel 等平台，指向根目錄即可。
+
+ ```bash
+git init
+git add .
+git commit -m "Initial commit"
+git remote add origin https://github.com/your-org/LuluLabWeb.git
+git push -u origin main
 ```
 
-## 🚀 快速開始
+ 在 GitHub 倉庫 Settings → Pages 設定 `main` 分支 `/ (root)` 即可上線。
 
-### 本地開發
+ ---
 
-1. **克隆或下載此項目**
-   ```bash
-   git clone https://github.com/yourusername/LuluLabWeb.git
-   cd LuluLabWeb
-   ```
+ ## 自訂指南
 
-2. **開啟本地服務器**
-   
-   **方法 1：使用 Python**
-   ```bash
-   # Python 3
-   python -m http.server 8000
-   
-   # Python 2
-   python -m SimpleHTTPServer 8000
-   ```
-   
-   **方法 2：使用 Node.js**
-   ```bash
-   npx http-server
-   ```
-   
-   **方法 3：使用 VS Code Live Server**
-   - 安裝 "Live Server" 擴展
-   - 右鍵點擊 index.html，選擇 "Open with Live Server"
+ ### 修改主色調
 
-3. **訪問網站**
-   - 打開瀏覽器，進入 `http://localhost:8000`
+ 編輯 `css/style.css` 中的 CSS 變數：
 
-### GitHub Pages 部署
-
-1. **創建 GitHub 倉庫**
-   - 在 GitHub 上創建新的公開倉庫
-   - 命名建議：`LuluLabWeb` 或 `username.github.io`
-
-2. **上傳代碼**
-   ```bash
-   git add .
-   git commit -m "Initial commit: LuluLab website"
-   git push origin main
-   ```
-
-3. **啟用 GitHub Pages**
-   - 進入倉庫的 **Settings**
-   - 左側找到 **Pages**
-   - 在 "Source" 選擇 `main` 分支
-   - 點擊 **Save**
-
-4. **訪問線上網站**
-   - 網址：`https://yourusername.github.io/LuluLabWeb`
-   - 或 `https://yourusername.github.io`（如果使用 username.github.io）
-
-## 🎨 技術棧
-
-- **前端框架**：Vanilla JavaScript（無依賴）
-- **樣式**：CSS3（自定義屬性、Grid、Flexbox）
-- **動畫**：Canvas API + requestAnimationFrame
-- **圖標**：Font Awesome 6.4.0
-- **字體**：PingFang TC, Microsoft JhengHei
-
-## 📱 響應式支持
-
-- ✅ 桌面版（1200px+）
-- ✅ 平板版（768px - 1200px）
-- ✅ 手機版（480px - 768px）
-- ✅ 超小屏（< 480px）
-
-## ✨ 核心功能
-
-### 粒子動畫
-
-網站首頁使用 Canvas 技術實現粒子文字變形動畫：
-- **階段 1**：顯示 "LuluLab" 文字
-- **階段 2**：滾動時粒子散開
-- **階段 3**：粒子聚集成 "ABOUT" 文字
-
-### 互動效果
-
-- 平滑滾動過渡
-- 卡片懸停動畫
-- 按鈕點擊反饋
-
-## 🔧 自定義指南
-
-### 修改配色
-
-編輯 `css/style.css` 中的 CSS 變數：
-
-```css
+ ```css
 :root {
-    --primary-orange: #FF7F24;  /* 主色（橙色） */
-    --dark-bg: #1a1a1a;         /* 背景色（深灰） */
-    --light-text: #ffffff;      /* 文字色（白色） */
-    --card-bg: #2a2a2a;         /* 卡片背景 */
+    --primary-orange: #FF7F24;   /* 品牌主色 */
+    --dark-bg: rgba(3, 3, 3, 0.8);   /* 深色背景 */
 }
 ```
 
-### 修改文字
+ ### 調整粒子動畫參數
 
-1. **課程卡片**：編輯 `index.html` 中 `#curriculum` 區塊
-2. **項目列表**：編輯 `index.html` 中 `#projects` 區塊
-3. **簡介文本**：編輯 `index.html` 中 `#intro` 和 `#about` 區塊
+ 編輯 `js/script.js` 中的 `config` 物件：
 
-### 修改粒子動畫參數
-
-編輯 `js/script.js` 中的 `config` 對象：
-
-```javascript
+ ```javascript
 const config = {
-    fontSize: 180,      // 文字大小
-    fontName: 'Arial Black', // 字體名稱
-    gap: 6,             // 採樣間距（越小越精細）
-    particleSize: 2.5   // 粒子大小
+    fontSize: 160,        // 文字大小
+    gap: 6,               // 取樣間距（越小越精細）
+    particleSize: 2.2,    // 粒子半徑
+    mouseRadius: 100,     // 滑鼠影響範圍（px）
+    ease: 0.08            // 回彈速度
 };
 ```
 
-## 📞 聯繫方式
+ 開場動畫時長與階段比例可在檔案頂部的 `INTRO_DURATION` 和 `updatePhysics()` 中的 phase 邊界調整。
 
-- **郵箱**：contact@lululab.hk
-- **地點**：香港科技大學
-- **社交媒體**：Instagram, WeChat 等
+ ### 修改課程／專案內容
 
-## 📄 許可證
+ 直接編輯 `index.html` 中對應的 `<section>`：
+ - 課程卡片 → `#curriculum`
+ - 專案清單 → `#projects`
+ - 教學資源 → `#resources`
 
-MIT License - 自由使用和修改
+ ---
 
-## 🙏 致謝
+ ## 頁面結構
 
-- 由 HKUST 計算機科學、電子工程、數學系及商科學生共同創立
-- 感謝所有支持 STEAM 教育的朋友們
+ | Section | ID | 說明 |
+ |---|---|---|
+ | 首頁 | `#home` | 粒子動畫與向下滾動提示 |
+ | 關於 | `#about` | 品牌故事與理念 |
+ | 課程 | `#curriculum` | Spark / Root / Forge 三模組 |
+ | 專案 | `#projects` | 硬體與軟體/AI 類專案 |
+ | 資源 | `#resources` | 教材、影片、程式碼庫等 |
+ | 聯絡 | `#contact` | CTA 按鈕導向預約頁 |
 
----
+ 粒子系統會根據各區塊標題的實際 DOM 位置自動計算顯示位置，不需手動設定 Y 軸偏移。
 
-**最後更新**：2025 年 4 月
-**版本**：1.0.0
+ ---
 
-> 科技是為了點燃每個人內心的火花 🔥
+ ## 貢獻
+
+ 歡迎提交 Issue 或 Pull Request。目前無自動化測試，請手動在 Chrome／Safari／Firefox 最新版驗證。
+
+ ---
+
+ ## 授權
+
+ MIT License
+
+ ---
