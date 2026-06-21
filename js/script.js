@@ -1,5 +1,5 @@
  // ==================== Intro Animation ====================
- const INTRO_TEXT = 'Think it.\nBuild it.\nBreak it.\nFix it.';
+ const INTRO_TEXT = 'Think it. Build it.\nBreak it. Fix it.';
  let introActive = true;
  let introStartTime = 0;
  const INTRO_DURATION = 8000; // ms for full intro sequence
@@ -253,7 +253,7 @@ function createParticles() {
              p.size = config.particleSize;
          });
 
-        if (progress >= 1) {
+        if (progress >= 0.87) {
             introActive = false;
             // Restore CSS-controlled background (orange at top, dark when scrolled)
             canvas.style.backgroundColor = '';
