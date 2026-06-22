@@ -2,6 +2,7 @@
  const INTRO_TEXT = 'Think it. Build it.\nBreak it. Fix it.';
  let introActive = true;
  let introStartTime = 0;
+let introCompleted = false;
  const INTRO_DURATION = 8000; // ms for full intro sequence
 // Intro text rendering params (set in init, used by createParticles for line grouping)
 let g_introFontSize = 80;
@@ -187,8 +188,10 @@ function createParticles() {
      }
  
      // Reset intro for a fresh playback on init
-     introActive = true;
-     introStartTime = performance.now();
+     if (!introCompleted) {
+         introActive = true;
+         introStartTime = performance.now();
+     }
  }
 
 // ==================== 核心邏輯 ====================
@@ -255,6 +258,7 @@ function createParticles() {
 
         if (progress >= 0.87) {
             introActive = false;
+            introCompleted = true;
             // Restore CSS-controlled background (orange at top, dark when scrolled)
             canvas.style.backgroundColor = '';
             // Snap particles cleanly to LuluLab positions
